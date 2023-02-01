@@ -17,10 +17,27 @@ class AdminAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-
-        if(Auth::user()->role == 'user'){
-            abort(404);
+        if(!empty(Auth::user())){
+            if(url()->current() == route('auth#loginPage') || url()->current() == route('auth#registerPage') ){
+                return back();
+            }
+            if(Auth::user()->role == 'user'){
+               return back();
+            }
+            return $next($request);
         }
+
         return $next($request);
     }
 }
+
+/*  Project Cache
+    php artisan config:clear
+    php artisan cache:clear
+    php artisan config:cache
+
+    Browser Cache
+    setting > history > clear history
+    Application > clear
+    reload > right click > empty cache & hard relad
+*/

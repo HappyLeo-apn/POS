@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
@@ -8,16 +9,14 @@ use Illuminate\Support\Facades\Route;
 
 //Login //Register
 
-Route::redirect('/', 'loginPage');
-Route::get('loginPage', [AuthController::class, 'loginPage'])->name('auth#loginPage');
-Route::get('registerPage', [AuthController::class, 'registerPage'])->name('auth#registerPage');
+Route::middleware('admin_auth')->group(function(){
+    Route::redirect('/', 'loginPage');
+    Route::get('loginPage', [AuthController::class, 'loginPage'])->name('auth#loginPage');
+    Route::get('registerPage', [AuthController::class, 'registerPage'])->name('auth#registerPage');
+});
 
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     //dashboard
     Route::get('dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
@@ -33,8 +32,13 @@ Route::middleware([
             Route::post('update', [CategoryController::class, 'update'])->name('category#update');
         });
         Route::prefix('admin')->group(function(){
-            Route::get('password/changePage', [AuthController::class, 'changePasswordPage'])->name('admin#changePasswordPage');
-            Route::post('change/password', [AuthController::class, 'changePassword'])->name('admin#changePassword');
+            //Password 
+            Route::get('password/changePage', [AdminController::class, 'changePasswordPage'])->name('admin#changePasswordPage');
+            Route::post('change/password', [AdminController::class, 'changePassword'])->name('admin#changePassword');
+            //Account Profile
+            Route::get('details', [AdminController::class, 'details'])->name('admin#details');
+            Route::get('edit',[AdminController::class, 'edit'])->name('admin#edit');
+            
         });
     });
     //Admim Category
