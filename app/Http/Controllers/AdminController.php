@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -43,6 +46,27 @@ class AdminController extends Controller
     public function edit(){
         return view('admin.account.edit');
     }
+    //Update Account 
+    public function update($id, Request $request){
+       $this->accountValidationCheck($request);
+        $data = $this->getUserData($request);
+
+        //for image
+        if($request->hasFile('image')){
+            $dbImageName = User::where('id', $id)->first();
+            $dbImageName = $dbImageName->image;
+
+            if($dbImageName != null){
+                Storage::delete('public/' . $dbImageName);
+            }
+            $fileName = uniqid() . $request->file('image')->getClientOriginalName();
+           $request->file('image')->storeAs('public', $fileName);
+           $data['image'] = $fileName;
+        }
+        User::where('id', $id)->update($data);
+        return redirect()->route('admin#details')->with(['accountSuccess' => 'Admin account info updated...']);
+
+    }
 
     //Password Validation
     private function passwordValidationCheck($request){
@@ -50,6 +74,29 @@ class AdminController extends Controller
             'oldPassword' => 'required|min:6|max:10',
             'newPassword' => 'required|min:6|max:10',
             'confirmPassword' => 'required|min:6|max:10|same:newPassword' 
+        ])->validate();
+    }
+    //Get uesr data
+    private function getUserData($request){
+        return  [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'gender' =>  $request->gender,
+            'updated_at' => Carbon::now()
+        ];
+    }
+
+    //Account Validation 
+    private function accountValidationCheck($request){
+        Validator::make($request->all(),[
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'address' => 'required',
+            'gender' => 'required',
+
         ])->validate();
     }
 }

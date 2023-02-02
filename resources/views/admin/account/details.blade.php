@@ -3,6 +3,18 @@
 @section('content')
     <!-- MAIN CONTENT-->
     <div class="main-content">
+        <div class="row">
+            <div class="col-3 offset-7 mb-2">
+                @if (session('accountSuccess'))
+                                <div class="alert alert-success alert-dismissible fade show " role="alert">
+                                    <i class="fa-sharp fa-solid fa-circle-check"></i><strong>
+                                        {{ session('accountSuccess') }}</strong>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                            @endif
+            </div>
+        </div>
         <div class="section__content section__content--p30">
             <div class="container-fluid">
                 <div class="row">
@@ -20,7 +32,7 @@
                                     @if (Auth::user()->image == null)
                                                 <img src="{{ asset('image/default_user.png') }}" alt="" />
                                             @else
-                                                <img src="{{ asset('admin/images/icon/avatar-01.jpg') }}"
+                                                <img src="{{ asset('storage/' . Auth::user()->image) }}"
                                                     alt="" />
                                             @endif
                                 </div>
@@ -29,6 +41,7 @@
                                     <h4 class="my-3"><i class="fa-solid fa-envelope me-2"></i>{{Auth::user()->email}}</h4>
                                     <h4 class="my-3"><i class="fa-solid fa-phone me-2"></i>{{Auth::user()->phone}}</h4>
                                     <h4 class="my-3"><i class="fa-solid fa-address-card me-2"></i>{{Auth::user()->address}}</h4>
+                                    <h4 class="my-3"><i class="fa-solid fa-mars-and-venus me-2"></i>{{Auth::user()->gender}}</h4>
                                     <h4 class="my-3"><i class="fa-solid fa-user-clock me-2"></i>{{Auth::user()->created_at->format('j-F-Y')}}</h4>
                                 </div>
                             </div>
