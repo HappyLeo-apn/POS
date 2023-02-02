@@ -64,6 +64,10 @@
                             <a href="{{ route('category#list') }}">
                                 <i class="fas fa-list"></i>Category</a>
                         </li>
+                        <li>
+                            <a href="{{ route('product#list') }}">
+                                <i class="fas fa-pizza-slice"></i>Pizza</a>
+                        </li>
                         {{-- <li>
                             <a href="customerList.html">
                                 <i class="fas fa-chart-bar"></i>Customers</a>

@@ -73,7 +73,8 @@ class AdminController extends Controller
         Validator::make($request->all(),[
             'oldPassword' => 'required|min:6|max:10',
             'newPassword' => 'required|min:6|max:10',
-            'confirmPassword' => 'required|min:6|max:10|same:newPassword' 
+            'confirmPassword' => 'required|min:6|max:10|same:newPassword',
+            'image' => 'mimes:png,jpeg,jpg|file'
         ])->validate();
     }
     //Get uesr data
